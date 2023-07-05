@@ -12,6 +12,8 @@ import {
 import {PackageURL} from "packageurl-js"
 import Stack from "@mui/material/Stack/Stack";
 
+const NuGetRegex = new RegExp("https://www\.nuget\.org/packages/(?<name>[^/]+)(/(?<version>[^/]+))?$")
+
 function GenerateFromRegistryURLCard() {
     const [registryURL, setRegistryURL] = useState("")
 
@@ -43,7 +45,16 @@ function GenerateFromRegistryURLCard() {
                 purl = new PackageURL("npm", namespace, name, version, undefined, undefined)
             } catch (error) {}
         }
+
+        let nuGetMatch = NuGetRegex.exec(registryURL)
+        if (nuGetMatch?.groups) {
+            try {
+                purl = new PackageURL("nuget", undefined, nuGetMatch.groups["name"], nuGetMatch.groups["version"], undefined, undefined)
+            } catch (error) {}
+        }
     }
+
+    let isError = registryURL.length > 0 && !purl
 
     return <Card sx={{marginBottom: 4}}>
         <CardHeader
@@ -61,7 +72,8 @@ function GenerateFromRegistryURLCard() {
             <TextField variant="filled"
                        label="Package Registry URL, e.g. https://www.npmjs.com/package/lodash/v/4.17.21"
                        fullWidth
-                       error={registryURL.length > 0 && !purl}
+                       error={isError}
+                       helperText={isError && "Given URL is either invalid or not supported."}
                        onChange={event => setRegistryURL(event.target.value)}
                        value={registryURL}
             />
