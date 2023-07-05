@@ -12,7 +12,7 @@ import {
 import {PackageURL} from "packageurl-js"
 import Stack from "@mui/material/Stack/Stack";
 
-const NuGetRegex = new RegExp("https://www\.nuget\.org/packages/(?<name>[^/]+)(/(?<version>[^/]+))?$")
+const NuGetRegex = new RegExp("https://www\\.nuget\\.org/packages/(?<name>[^/]+)(/(?<version>[^/]+))?$")
 
 function GenerateFromRegistryURLCard() {
     const [registryURL, setRegistryURL] = useState("")
