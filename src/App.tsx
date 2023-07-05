@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import React, {useState} from 'react';
 import './App.css';
 import {
     Box,
@@ -11,6 +11,70 @@ import {
 } from "@mui/material";
 import {PackageURL} from "packageurl-js"
 import Stack from "@mui/material/Stack/Stack";
+
+function GenerateFromRegistryURLCard() {
+    const [registryURL, setRegistryURL] = useState("")
+
+    let purl: PackageURL | undefined = undefined
+    if (registryURL.length > 0) {
+        // Parse npmjs.org URL to extract package name and version
+        if (registryURL.startsWith("https://www.npmjs.com/package/")) {
+            let pathComponents = registryURL
+                .replace("https://www.npmjs.com/package/", "")
+                .split("/")
+
+            let namespace: string | undefined = undefined;
+            let name;
+            let version: string | undefined = undefined;
+
+            if (pathComponents.indexOf("v") === pathComponents.length - 2) {
+                version = pathComponents.pop()
+                pathComponents.pop()
+            }
+
+            if (pathComponents.length > 1) {
+                namespace = pathComponents[0]
+                name = pathComponents[1]
+            } else {
+                name = pathComponents[0]
+            }
+
+            try {
+                purl = new PackageURL("npm", namespace, name, version, undefined, undefined)
+            } catch (error) {}
+        }
+    }
+
+    return <Card sx={{marginBottom: 4}}>
+        <CardHeader
+            title="Create Package URL From Package Registry URL"
+            subheader="Create a Package URL from a package registry URL (e.g. https://www.npmjs.com/package/lodash/v/4.17.21)"
+            sx={{
+                backgroundColor: (theme) => theme.palette.primary.main,
+                color: (theme) => theme.palette.primary.contrastText
+            }}
+            subheaderTypographyProps={{
+                color: (theme) => theme.palette.primary.contrastText
+            }}
+        />
+        <CardContent>
+            <TextField variant="filled"
+                       label="Package Registry URL, e.g. https://www.npmjs.com/package/lodash/v/4.17.21"
+                       fullWidth
+                       error={registryURL.length > 0 && !purl}
+                       onChange={event => setRegistryURL(event.target.value)}
+                       value={registryURL}
+            />
+            {purl && <React.Fragment>
+                <Typography sx={{
+                    fontWeight: 'bold',
+                    display: 'inline'
+                }}>Package URL: </Typography>
+                {purl.toString()}
+            </React.Fragment>}
+        </CardContent>
+    </Card>
+}
 
 function DecodePackageURLCard() {
     const [urlToDecode, setUrlToDecode] = useState<string>("")
@@ -106,6 +170,7 @@ function App() {
         <>
             <CssBaseline/>
             <Container disableGutters maxWidth="lg" component="main" sx={{pt: 8, pb: 6}}>
+                <GenerateFromRegistryURLCard/>
                 <DecodePackageURLCard/>
             </Container>
         </>
