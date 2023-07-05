@@ -101,31 +101,12 @@ function DecodePackageURLCard() {
     </Card>
 }
 
-function GenerateFromRegistryURLCard() {
-    return <Card sx={{marginBottom: 4}}>
-        <CardHeader
-            title="Create Package URL From Package Registry URL"
-            subheader="Create a Package URL from a package registry URL (e.g. https://www.npmjs.com/package/lodash/v/4.17.21)"
-            sx={{
-                backgroundColor: (theme) => theme.palette.primary.main,
-                color: (theme) => theme.palette.primary.contrastText
-            }}
-        />
-        <CardContent>
-            <TextField variant="filled"
-                       label="Package Registry URL, e.g. https://www.npmjs.com/package/lodash/v/4.17.21"
-                       fullWidth/>
-        </CardContent>
-    </Card>;
-}
-
 function App() {
     return (
         <>
             <CssBaseline/>
             <Container disableGutters maxWidth="lg" component="main" sx={{pt: 8, pb: 6}}>
                 <DecodePackageURLCard/>
-                {/*<GenerateFromRegistryURLCard/>*/}
             </Container>
         </>
     );
