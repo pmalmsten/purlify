@@ -1,16 +1,17 @@
 import React, {useState} from 'react';
 import './App.css';
 import {
-    Box,
+    Box, Button,
     Card,
     CardContent,
     CardHeader,
     Container,
-    CssBaseline, List, ListItem, TextField,
+    CssBaseline, IconButton, List, ListItem, ListItemText, TextField,
     Typography
 } from "@mui/material";
 import {PackageURL} from "packageurl-js"
 import Stack from "@mui/material/Stack/Stack";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const NuGetRegex = new RegExp("https://www\\.nuget\\.org/packages/(?<name>[^/]+)(/(?<version>[^/]+))?$")
 
@@ -91,12 +92,57 @@ function GenerateFromRegistryURLCard() {
 }
 
 function GenerateManuallyCard() {
+    interface QualifierAddFormProps {
+        onAddQualifier: (key: string, value: string) => void
+    }
+
+    function QualifierAddForm({onAddQualifier}: QualifierAddFormProps) {
+        const [qualifierAddFormKey, setQualifierAddFormKey] = useState("")
+        const [qualifierAddFormValue, setQualifierAddFormValue] = useState("")
+        const [formErrorTexts, setFormErrorTexts] = useState<{key: undefined | string, value: undefined | string}>({
+            key: undefined,
+            value: undefined
+        })
+
+        let handleAddButtonClick = function() {
+            if (qualifierAddFormKey && qualifierAddFormValue) {
+                onAddQualifier(qualifierAddFormKey, qualifierAddFormValue)
+                setQualifierAddFormKey("")
+                setQualifierAddFormValue("")
+                setFormErrorTexts({key: undefined, value: undefined})
+            } else {
+                setFormErrorTexts({
+                    key: qualifierAddFormKey ? undefined : "A key is required.",
+                    value: qualifierAddFormValue ? undefined : "A value is required"
+                })
+            }
+        }
+
+        return <Stack direction={"row"}>
+            <TextField variant="filled"
+                       label="Qualifier Key"
+                       value={qualifierAddFormKey}
+                       onChange={(event) => setQualifierAddFormKey(event.target.value)}
+                       error={!!formErrorTexts["key"]}
+                       helperText={formErrorTexts["key"]}
+            />
+            <TextField variant="filled"
+                       label="Qualifier Value"
+                       value={qualifierAddFormValue}
+                       onChange={(event) => setQualifierAddFormValue(event.target.value)}
+                       error={!!formErrorTexts["value"]}
+                       helperText={formErrorTexts["value"]}
+            />
+            <Button variant={"contained"} onClick={handleAddButtonClick}>Add</Button>
+        </Stack>
+    }
+
     const [type, setType] = useState("")
     const [namespace, setNamespace] = useState("")
     const [name, setName] = useState("")
     const [version, setVersion] = useState("")
     const [subpath, setSubpath] = useState("")
-    const [qualifiers, setQualifiers] = useState({})
+    const [qualifiers, setQualifiers] = useState<{[key: string]: string}>({})
 
     let purl: PackageURL | undefined = undefined;
     if (type && name) {
@@ -105,11 +151,23 @@ function GenerateManuallyCard() {
             namespace ? namespace : undefined,
             name,
             version? version : undefined,
-            undefined,
+            Object.keys(qualifiers).length? qualifiers : undefined,
             subpath? subpath : undefined)
     }
 
     let typeOrNameMissing = (type && !name) || (name && !type)
+
+    let onAddQualifier = function(key: string, value: string) {
+        setQualifiers({
+            ...qualifiers,
+            [key]: value
+        })
+    }
+
+    let onDeleteQualifier = function(key: string) {
+        const {[key]: _, ...rest} = qualifiers // Remove qualifier with key 'key'
+        setQualifiers(rest)
+    }
 
     return <Card sx={{marginBottom: 4}}>
         <CardHeader
@@ -146,6 +204,27 @@ function GenerateManuallyCard() {
                        onChange={(event) => setSubpath(event.target.value)}
             />
             <br />
+
+            <Typography sx={{
+                fontWeight: 'bold',
+                display: 'inline'
+            }}>Qualifiers:</Typography>
+            <Stack sx={{ marginLeft: 3}}>
+                <QualifierAddForm onAddQualifier={onAddQualifier}/>
+
+                <List>
+                    {Object.keys(qualifiers).map(key =>
+                    <ListItem
+                        secondaryAction={
+                            <IconButton edge="end" aria-label="delete" onClick={(_) => onDeleteQualifier(key)}>
+                                <DeleteIcon />
+                            </IconButton>
+                        }
+                    >
+                        <ListItemText>{key}: {qualifiers[key]}</ListItemText>
+                    </ListItem>)}
+                </List>
+            </Stack>
 
             {typeOrNameMissing && <React.Fragment>
                 <Typography sx={{
