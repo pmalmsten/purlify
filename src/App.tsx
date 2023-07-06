@@ -43,14 +43,16 @@ function GenerateFromRegistryURLCard() {
 
             try {
                 purl = new PackageURL("npm", namespace, name, version, undefined, undefined)
-            } catch (error) {}
+            } catch (error) {
+            }
         }
 
         let nuGetMatch = NuGetRegex.exec(registryURL)
         if (nuGetMatch?.groups) {
             try {
                 purl = new PackageURL("nuget", undefined, nuGetMatch.groups["name"], nuGetMatch.groups["version"], undefined, undefined)
-            } catch (error) {}
+            } catch (error) {
+            }
         }
     }
 
@@ -77,6 +79,81 @@ function GenerateFromRegistryURLCard() {
                        onChange={event => setRegistryURL(event.target.value)}
                        value={registryURL}
             />
+            {purl && <React.Fragment>
+                <Typography sx={{
+                    fontWeight: 'bold',
+                    display: 'inline'
+                }}>Package URL: </Typography>
+                {purl.toString()}
+            </React.Fragment>}
+        </CardContent>
+    </Card>
+}
+
+function GenerateManuallyCard() {
+    const [type, setType] = useState("")
+    const [namespace, setNamespace] = useState("")
+    const [name, setName] = useState("")
+    const [version, setVersion] = useState("")
+    const [subpath, setSubpath] = useState("")
+    const [qualifiers, setQualifiers] = useState({})
+
+    let purl: PackageURL | undefined = undefined;
+    if (type && name) {
+        purl = new PackageURL(
+            type,
+            namespace ? namespace : undefined,
+            name,
+            version? version : undefined,
+            undefined,
+            subpath? subpath : undefined)
+    }
+
+    let typeOrNameMissing = (type && !name) || (name && !type)
+
+    return <Card sx={{marginBottom: 4}}>
+        <CardHeader
+            title="Create Package URL from Components"
+            sx={{
+                backgroundColor: (theme) => theme.palette.primary.main,
+                color: (theme) => theme.palette.primary.contrastText
+            }}
+        />
+        <CardContent>
+            <TextField variant="filled"
+                       label="Type"
+                       value={type}
+                       onChange={(event) => setType(event.target.value)}
+            />
+            <TextField variant="filled"
+                       label="Namespace"
+                       value={namespace}
+                       onChange={(event) => setNamespace(event.target.value)}
+            />
+            <TextField variant="filled"
+                       label="Name"
+                       value={name}
+                       onChange={(event) => setName(event.target.value)}
+            />
+            <TextField variant="filled"
+                       label="Version"
+                       value={version}
+                       onChange={(event) => setVersion(event.target.value)}
+            />
+            <TextField variant="filled"
+                       label="Subpath"
+                       value={subpath}
+                       onChange={(event) => setSubpath(event.target.value)}
+            />
+            <br />
+
+            {typeOrNameMissing && <React.Fragment>
+                <Typography sx={{
+                    fontWeight: 'bold',
+                    display: 'inline'
+                }}>Type and Name components are required.</Typography>
+            </React.Fragment>}
+
             {purl && <React.Fragment>
                 <Typography sx={{
                     fontWeight: 'bold',
@@ -183,6 +260,7 @@ function App() {
             <CssBaseline/>
             <Container disableGutters maxWidth="lg" component="main" sx={{pt: 8, pb: 6}}>
                 <GenerateFromRegistryURLCard/>
+                <GenerateManuallyCard />
                 <DecodePackageURLCard/>
             </Container>
         </>
