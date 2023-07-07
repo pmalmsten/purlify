@@ -44,7 +44,13 @@ function GenerateFromRegistryURLCard() {
             }
 
             try {
-                purl = new PackageURL("npm", namespace, name, version, undefined, undefined)
+                purl = new PackageURL(
+                    "npm",
+                    namespace ? decodeURIComponent(namespace) : undefined,
+                    decodeURIComponent(name),
+                    version ? decodeURIComponent(version) : undefined,
+                    undefined,
+                    undefined)
             } catch (error) {
             }
         }
@@ -52,7 +58,13 @@ function GenerateFromRegistryURLCard() {
         let nuGetMatch = NuGetRegex.exec(registryURL)
         if (nuGetMatch?.groups) {
             try {
-                purl = new PackageURL("nuget", undefined, nuGetMatch.groups["name"], nuGetMatch.groups["version"], undefined, undefined)
+                purl = new PackageURL(
+                    "nuget",
+                    undefined,
+                    decodeURIComponent(nuGetMatch.groups["name"]),
+                    nuGetMatch.groups["version"] ? decodeURIComponent(nuGetMatch.groups["version"]) : undefined,
+                    undefined,
+                    undefined)
             } catch (error) {
             }
         }
@@ -60,7 +72,13 @@ function GenerateFromRegistryURLCard() {
         let pypiMatch = PyPiRegex.exec(registryURL)
         if (pypiMatch?.groups) {
             try {
-                purl = new PackageURL("pypi", undefined, pypiMatch.groups["name"], pypiMatch.groups["version"], undefined, undefined)
+                purl = new PackageURL(
+                    "pypi",
+                    undefined,
+                    decodeURIComponent(pypiMatch.groups["name"]),
+                    pypiMatch.groups["version"] ? decodeURIComponent(pypiMatch.groups["version"]) : undefined,
+                    undefined,
+                    undefined)
             } catch (error) {
             }
         }
