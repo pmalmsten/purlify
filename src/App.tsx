@@ -14,6 +14,7 @@ import Stack from "@mui/material/Stack/Stack";
 import DeleteIcon from '@mui/icons-material/Delete';
 
 const NuGetRegex = new RegExp("https://www\\.nuget\\.org/packages/(?<name>[^/]+)(/(?<version>[^/]+))?$")
+const PyPiRegex = new RegExp("https://pypi\\.org/project/(?<name>[^/]+)((/(?<version>(?!#history)[^/]+))?|\\/)$")
 
 function GenerateFromRegistryURLCard() {
     const [registryURL, setRegistryURL] = useState("")
@@ -52,6 +53,14 @@ function GenerateFromRegistryURLCard() {
         if (nuGetMatch?.groups) {
             try {
                 purl = new PackageURL("nuget", undefined, nuGetMatch.groups["name"], nuGetMatch.groups["version"], undefined, undefined)
+            } catch (error) {
+            }
+        }
+
+        let pypiMatch = PyPiRegex.exec(registryURL)
+        if (pypiMatch?.groups) {
+            try {
+                purl = new PackageURL("pypi", undefined, pypiMatch.groups["name"], pypiMatch.groups["version"], undefined, undefined)
             } catch (error) {
             }
         }
