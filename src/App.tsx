@@ -13,7 +13,7 @@ import {PackageURL} from "packageurl-js"
 import Stack from "@mui/material/Stack/Stack";
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const NuGetRegex = new RegExp("https://www\\.nuget\\.org/packages/(?<name>[^/]+)(/(?<version>[^/]+))?$")
+const NuGetRegex = new RegExp("https://www\\.nuget\\.org/packages/(?<name>[^/]+)((/(?<version>[^/]+))?|\\/)$")
 const PyPiRegex = new RegExp("https://pypi\\.org/project/(?<name>[^/]+)((/(?<version>(?!#history)[^/]+))?|\\/)$")
 
 function GenerateFromRegistryURLCard() {
