@@ -8,11 +8,9 @@
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.13.7",
     "@mui/material": "^5.13.7",
-    "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.38",
+    "@types/node": "^18.0.0",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",
     "packageurl-js": "^1.0.2",
@@ -25,13 +23,12 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "vitest",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
+      "react-app"
     ]
   },
   "browserslist": {
@@ -47,6 +44,9 @@
     ]
   },
   "devDependencies": {
-    "@tsconfig/create-react-app": "^2.0.0"
+    "@tsconfig/create-react-app": "^2.0.0",
+    "jsdom": "^25.0.1",
+    "vite": "^5.4.8",
+    "vitest": "^2.1.2"
   }
 }
