@@ -6,7 +6,7 @@
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
-    "@mui/icons-material": "^5.13.7",
+    "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.16.7",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
