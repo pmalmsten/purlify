@@ -40,7 +40,7 @@ jobs:
       - run: npm ci
       - run: npm run build --if-present
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: 'build'
       - name: Deploy to GitHub Pages
