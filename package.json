@@ -46,7 +46,7 @@
   "devDependencies": {
     "@tsconfig/create-react-app": "^2.0.8",
     "jsdom": "^25.0.1",
-    "vite": "^6.3.6",
+    "vite": "^6.4.1",
     "vitest": "^3.2.4"
   }
 }
